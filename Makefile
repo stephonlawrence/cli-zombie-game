@@ -16,3 +16,6 @@ compile:
 
 run:
 	build/app
+
+dock:
+	docker-compose run cli-zombie-game make

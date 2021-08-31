@@ -7,3 +7,7 @@ brew install ncurses
 ```
 make
 ```
+## run with docker
+```
+make dock
+```
