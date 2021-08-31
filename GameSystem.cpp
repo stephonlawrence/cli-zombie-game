@@ -1,4 +1,6 @@
 #include "headers/GameSystem.h"
+#include <sstream>
+#include <iomanip>
 
 GameSystem::GameSystem(std::string filename){
   _level.load(filename, _player, _enemies);
@@ -7,15 +9,20 @@ GameSystem::GameSystem(std::string filename){
 
 }
 
-void GameSystem::playGame(){
+GameState GameSystem::playGame(){
   _etimer.reset();
   _gtimer.reset();
-  while(_state != STOPPED && _player.getHealth() > 0){
+  while(_state == PLAYING){
+    if (_player.getHealth() <= 0) {
+      _state = DIED;
+      break;
+    }
     if(_gtimer.elapsed() > 0.0001){
       processInput();
       _gtimer.reset();
     }
   }
+  return _state;
 }
 
 void GameSystem::processInput(){
@@ -25,15 +32,22 @@ void GameSystem::processInput(){
   _level.printFOV(_player);
   //_level.print();
 
+  std::ostringstream sshealth;
+  sshealth << std::fixed << std::setprecision(2) << _player.getHealth();
+  std::string health_indicator = sshealth.str() + "%";
 
-  ErrorLog::print("Press w, a, s, d to move: ");
+  std::ostringstream ssdefence;
+  ssdefence << std::fixed << std:: setprecision(2) << _player.getDefence();
+  std:: string defence_indicator = ssdefence.str();
+
+  ErrorLog::print("Press w, a, s, d to move | [HEALTH - "+ health_indicator +" | "+ defence_indicator +"]");
 
   input = getch();
 
   if(input == 'q')
     _state = STOPPED;
   else{
-    _level.movePlayer(input, _player);
+    _state = _level.movePlayer(input, _player);
     processEnemyMove();
   }
 }
@@ -74,7 +88,7 @@ void GameSystem::processEnemyMove(){
           stoppers.push_back('@');
           stoppers.push_back('Z');
           _enemies[i].getPosition(x, y);
-          if(std::abs(x - pos.x) <= 1 || std::abs(y - pos.y) <= 1)
+          if(std::abs(x - pos.x) <= 1 && std::abs(y - pos.y) <= 1)
             _enemies[i].attackPlayer(_player);
             
           // algorithm for finding player for each enemy

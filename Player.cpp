@@ -3,18 +3,23 @@
 Player::Player(double fovRadius){
   _fovRadius = fovRadius;
   _defence = 2;
-  _health = 10000;
-  _damage = 5;
+  _health = 100;
+  _damage = 7;
+  _attackTimer.reset();
 }
 Player::Player(){
   _fovRadius = 5;
   _defence = 2;
-  _health = 10000;
-  _damage = 5;
+  _health = 100;
+  _damage = 7;
+  _attackTimer.reset();
 }
 
 void Player::attackPlayer(Player &player){
-  player.doDamage(_damage);
+  if(_attackTimer.elapsed() >= 1) {
+    player.doDamage(_damage);
+    _attackTimer.reset();
+  }
 }
 
 void Player::getPosition(int &x, int &y){
@@ -38,6 +43,8 @@ void Player::setHealth(double amount){_health = amount;}
 double Player::getDamage(){return _damage;}
 
 void Player::setDamage(double dmg){_damage = dmg;}
+
+double Player::getDefence(){return _defence;}
 
 void Player::setDefence(double defence){_defence = defence;}
 

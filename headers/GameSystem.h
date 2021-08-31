@@ -8,14 +8,13 @@
 #include <cmath>
 #include <cstdlib>
 #include <ctime>
-
-enum GameState { PLAYING, STOPPED };
+#include "GameState.h"
 
 class GameSystem{
 public:
   GameSystem(std::string filename);
 
-  void playGame();
+  GameState playGame();
   void stop();
   void processInput();
   void processEnemyMove();

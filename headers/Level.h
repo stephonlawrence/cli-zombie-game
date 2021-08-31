@@ -2,6 +2,7 @@
 
 #include "ErrorLog.h"
 #include "Player.h"
+#include "GameState.h"
 
 #include <fstream>
 #include <string>
@@ -16,10 +17,10 @@ class Level{
 public:
   void load(std::string, Player &player, std::vector<Player> &enemies);
   void print();
-  void movePlayer(char input, Player &player);
+  GameState movePlayer(char input, Player &player);
   char getTile(int x, int y);
   void setTile(int x, int y, char tile);
-  void processPlayerMove(Player& player, int targetx, int targety);
+  GameState processPlayerMove(Player& player, int targetx, int targety);
   void printDist(Player &player);
   void printSinDist(Player &player);
   void printFOV(Player &player);

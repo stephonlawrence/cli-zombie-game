@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "../Position.cpp"
+#include "Timer.h"
 
 class Player{
 public:
@@ -20,6 +21,7 @@ public:
   double getDamage();
   void setDamage(double dmg);
 
+  double getDefence();
   void setDefence(double defence);
 
   char getRef();
@@ -38,4 +40,5 @@ private:
   char _ref;
   std::vector < std::vector<Pos> > _fov;
   double _fovRadius;
+  Timer _attackTimer;
 };

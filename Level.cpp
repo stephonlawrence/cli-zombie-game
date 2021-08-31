@@ -1,4 +1,5 @@
 #include "headers/Level.h"
+#include "headers/GameState.h"
 
 const double PI = 3.14159265;
 void Level::load(std::string filename, Player &player, std::vector<Player> &enemies){
@@ -29,7 +30,6 @@ void Level::load(std::string filename, Player &player, std::vector<Player> &enem
         break;
       case 'Z':
         Player p(10);
-        p.setDamage(100.0);
         p.setPosition(x, y);
         p.setRef('Z');
         enemies.push_back(p);
@@ -53,7 +53,7 @@ void Level::setTile(int x, int y, char tile){
   _map[y][x] = tile;
 }
 
-void Level::processPlayerMove(Player& player, int targetx, int targety){
+GameState Level::processPlayerMove(Player& player, int targetx, int targety){
 
   int playerx, playery;
   player.getPosition(playerx, playery);
@@ -65,9 +65,22 @@ void Level::processPlayerMove(Player& player, int targetx, int targety){
       player.setPosition(targetx, targety);
       break;
     case '2':
-      setTile(playerx, playery, ' ');
-      setTile(targetx, targety, player.getRef());
-      player.setPosition(targetx, targety);
+      if (player.getRef() == '@') {
+        player.setDefence(2);
+        setTile(playerx, playery, ' ');
+        setTile(targetx, targety, player.getRef());
+        player.setPosition(targetx, targety);
+      }
+      break;
+    case '<':
+    case '*':
+    case '>':
+      if (player.getRef() == '@') {
+        setTile(playerx, playery, ' ');
+        setTile(targetx, targety, player.getRef());
+        player.setPosition(targetx, targety);
+        return WIN;
+      }
       break;
     case '@':
       if(player.getRef() == 'Z'){
@@ -77,34 +90,36 @@ void Level::processPlayerMove(Player& player, int targetx, int targety){
     //case 'Z':
 
   }
+  return PLAYING;
 }
 
-void Level::movePlayer(char input, Player &player){
+GameState Level::movePlayer(char input, Player &player){
 
   int playerx, playery;
   player.getPosition(playerx, playery);
   switch(input){
     case 'w':
     case 'W':
-      processPlayerMove(player, playerx, playery - 1);
+      return processPlayerMove(player, playerx, playery - 1);
       break;
     case 'a':
     case 'A':
-      processPlayerMove(player, playerx - 1, playery);
+      return processPlayerMove(player, playerx - 1, playery);
       break;
     case 's':
     case 'S':
-      processPlayerMove(player, playerx, playery + 1);
+      return processPlayerMove(player, playerx, playery + 1);
       break;
     case 'd':
     case 'D':
-      processPlayerMove(player, playerx + 1, playery);
+      return processPlayerMove(player, playerx + 1, playery);
       break;
     default:
       ;
       // std::string val = "Invalid input: "+std::to_string(input)+" ... Press any key to continue.";
       // ErrorLog::print(val.c_str());
       // getch();
+  return PLAYING;
   }
 }
 
