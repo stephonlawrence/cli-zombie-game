@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   cli-zombie-game:
-    image: gcc:9.2
+    image: gcc:latest
     volumes:
       - "./:/app"
     working_dir: "/app"
